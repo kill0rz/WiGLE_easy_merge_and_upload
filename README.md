@@ -6,8 +6,9 @@ You need to get the API-Key from WiGLE.net: https://wigle.net/account
 # Features (done)
 + search if any file exists in the directory
 + choose: merge all *.gpsxml files into one single file
-+ zip everything (gz)
++ zip everything
++ upload
 
 # Feates (todo)
-+ upload; try if succeeded
++ try if upload succeeded
 + dell or files OR archive them

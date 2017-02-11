@@ -120,18 +120,25 @@ if (isset($files_dir) && trim($files_dir) != '') {
 				curl_setopt($this->ch, CURLOPT_FOLLOWLOCATION, 1);
 				curl_setopt($this->ch, CURLOPT_RETURNTRANSFER, 1);
 				curl_setopt($this->ch, CURLOPT_AUTOREFERER, 1);
+				curl_setopt($this->ch, CURLOPT_SSL_VERIFYHOST, 0);
+				curl_setopt($this->ch, CURLOPT_SSL_VERIFYPEER, 0);
 			}
 
 			public function upload($file) {
-				curl_setopt($this->ch, CURLOPT_HTTPHEADER, array("Content-type: multipart/form-data", 'Authorization: Basic ' . $this->wigle_api_encoded));
-				curl_setopt($this->ch, CURLOPT_URL, 'https://api.wigle.net/api/v2/file/upload/');
-				$postdata = array(
-					"file[]" => "@/" . realpath($file) . ";type=application/zip",
-					"donate" => "true",
+				curl_setopt($this->ch, CURLOPT_HTTPHEADER, array(
+					"Content-type: multipart/form-data",
+					'Authorization: Basic ' . $this->wigle_api_encoded,
+				)
 				);
-				curl_setopt($this->ch, CURLOPT_POSTFIELDS, $postdata);
-				$data = curl_exec($this->ch);
-				echo $data;
+
+				curl_setopt($this->ch, CURLOPT_URL, 'https://api.wigle.net/api/v2/file/upload/');
+
+				curl_setopt($this->ch, CURLOPT_POSTFIELDS, array(
+					"file" => new CurlFile($file, 'application/zip'),
+					"donate" => "true",
+				));
+
+				curl_exec($this->ch);
 			}
 		}
 
