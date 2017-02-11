@@ -67,45 +67,58 @@ if (isset($files_dir) && trim($files_dir) != '') {
 	} else {
 		// Step 2: Should the *.gpsxml be merged?
 		if ($merge_gpsxml) {
-			// are there more than 1 gpsxml file?
 			$gpsxml_files = array();
 			foreach (glob($files_dir . "*.gpsxml") as $file) {
 				$gpsxml_files[] = $file;
 			}
-			if (count($gpsxml_files) > 1) {
-				// merge them
-				$firstfile = true;
-				$final_gpsxml_header = '';
-				$final_gpsxml_points = '';
-				foreach ($gpsxml_files as $gpsxml_file) {
-					if ($firstfile) {
-						// get header of first file
-						$firstfilecontent = explode("\n", file_get_contents($gpsxml_file));
-						$firstfilecontent_i = 0;
-						while (substr(trim($firstfilecontent[$firstfilecontent_i]), 0, 10) != "<gps-point") {
-							$final_gpsxml_header .= $firstfilecontent[$firstfilecontent_i] . "\n";
-							$firstfilecontent_i++;
-						}
-						$firstfile = false;
-					}
 
-					//get content of every gps-point
-					$gpsxml_file_content = explode("\n", file_get_contents($gpsxml_file));
-					foreach ($gpsxml_file_content as $gps_points) {
-						if (substr(trim($gps_points), 0, 10) == "<gps-point") {
-							$final_gpsxml_points .= $gps_points . "\n";
-						}
+			// merge them
+			$firstfile = true;
+			$final_gpsxml_header = '';
+			$final_gpsxml_footer = '';
+			$final_gpsxml_points = '';
+			foreach ($gpsxml_files as $gpsxml_file) {
+				if ($firstfile) {
+					// get header of first file
+					$firstfilecontent = explode("\n", file_get_contents($gpsxml_file));
+					$firstfilecontent_i = 0;
+					while (substr(trim($firstfilecontent[$firstfilecontent_i]), 0, 10) != "<gps-point") {
+						$final_gpsxml_header .= $firstfilecontent[$firstfilecontent_i] . "\n";
+						$firstfilecontent_i++;
+					}
+					$final_gpsxml_footer = "</gps-run>";
+					$firstfile = false;
+				}
+
+				//get content of every gps-point
+				$gpsxml_file_content = explode("\n", file_get_contents($gpsxml_file));
+				foreach ($gpsxml_file_content as $gps_points) {
+					if (substr(trim($gps_points), 0, 10) == "<gps-point") {
+						$final_gpsxml_points .= $gps_points . "\n";
 					}
 				}
-				$final_gpsxml_footer = "</gps-run>";
-				$final_gpsxml_content = $final_gpsxml_header . $final_gpsxml_points . $final_gpsxml_footer;
-				file_put_contents("donefile.xml", $final_gpsxml_content);
+			}
+			$final_gpsxml_content = $final_gpsxml_header . $final_gpsxml_points . $final_gpsxml_footer;
+			if (trim($final_gpsxml_content) != '') {
+				file_put_contents($uploades_dir . "merged_gpsxml_files__" . time() . ".gpsxml", $final_gpsxml_content);
+				array_map('unlink', glob($files_dir . "*.gpsxml"));
+			}
+		}
+
+		// move all files to upload directory
+		$delete = array();
+		foreach ($files as $file) {
+			// do not move directories and invalid file names
+			if ((trim($file) != '' || in_array($file, array(".", "..")) || is_file($files_dir . $file)) && !preg_match("/[0-9a-zA-Z]{1,}\.[0-9a-zA-Z]{1,}/", $file)) {
+				continue;
 			}
 
-			// aus der ersten datei nur header und footer rausschneiden
-			// danach für alle nur inhalt
-			// dann in neue datei speichern
-			// dateinamen merken und von zip ausschließen
+			if (substr($file, -7, 7) != '.gpsxml' && copy($files_dir . $file, $uploades_dir . $file)) {
+				$delete[] = $files_dir . $file;
+			}
+		}
+		foreach ($delete as $file) {
+			unlink($file);
 		}
 	}
 }
