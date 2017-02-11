@@ -107,18 +107,54 @@ if (isset($files_dir) && trim($files_dir) != '') {
 
 		// move all files to upload directory
 		$delete = array();
+		$files = array();
+		$dh = opendir($files_dir);
+		while (false !== ($filename = readdir($dh))) {
+			$files[] = $filename;
+		}
+
 		foreach ($files as $file) {
 			// do not move directories and invalid file names
 			if ((trim($file) != '' || in_array($file, array(".", "..")) || is_file($files_dir . $file)) && !preg_match("/[0-9a-zA-Z]{1,}\.[0-9a-zA-Z]{1,}/", $file)) {
 				continue;
 			}
 
-			if (substr($file, -7, 7) != '.gpsxml' && copy($files_dir . $file, $uploades_dir . $file)) {
+			if (copy($files_dir . $file, $uploades_dir . $file)) {
 				$delete[] = $files_dir . $file;
 			}
 		}
 		foreach ($delete as $file) {
 			unlink($file);
 		}
+
+		// Step 3: Create a zip file
+		$dh_u = opendir($uploades_dir);
+		while (false !== ($filename = readdir($dh_u))) {
+			$upload_files[] = $filename;
+		}
+		$delete = array();
+		$zip = new ZipArchive();
+		$filename = $uploades_dir . "upload_to_wigle.zip";
+
+		if ($zip->open($filename, ZipArchive::CREATE) !== TRUE) {
+			exit("cannot open <$filename>\n");
+		}
+
+		foreach ($upload_files as $file) {
+			// do not process directories and invalid file names
+			if ((trim($file) != '' || in_array($file, array(".", "..")) || is_file($uploades_dir . $file)) && !preg_match("/[0-9a-zA-Z]{1,}\.[0-9a-zA-Z]{1,}/", $file)) {
+				continue;
+			}
+			if ($zip->addFile($uploades_dir . $file, $file)) {
+				$delete[] = $uploades_dir . $file;
+			}
+
+		}
+		$zip->close();
+		foreach ($delete as $file) {
+			unlink($file);
+		}
+
+		// Step 4: Upload to WiGLE
 	}
 }

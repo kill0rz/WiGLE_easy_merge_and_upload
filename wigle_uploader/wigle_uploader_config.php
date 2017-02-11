@@ -9,4 +9,4 @@ $uploades_dir = "./uploadfiles/";
 $wigle_api_encoded = "";
 
 // Should all *.gpsxml files be merged before further processing?
-$merge_gpsxml = true;
+$merge_gpsxml = false;
