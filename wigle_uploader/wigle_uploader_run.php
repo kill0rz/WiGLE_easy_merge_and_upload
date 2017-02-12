@@ -146,7 +146,7 @@ if (isset($config_files_dir) && trim($config_files_dir) != '') {
 
 		$getit = new curl($config_wigle_api_encoded);
 		$repsonse = json_decode($getit->upload($config_uploades_dir . "upload_to_wigle.zip"));
-		if ($repsonse->success == "1") {
+		if (isset($repsonse->success) && $repsonse->success == "1") {
 			// Step 5: delete all files or archive them
 			if ($config_delete_all) {
 				// delete the zip file
@@ -154,14 +154,14 @@ if (isset($config_files_dir) && trim($config_files_dir) != '') {
 			} else {
 				// archive the zip file
 				if (!copy($config_uploades_dir . "upload_to_wigle.zip", $config_archive_dir . time() . "_upload_to_wigle.zip")) {
-					echo "error copying file to archive!";
+					echo "error copying file to archive!\n";
 				} else {
 					// copy success
 					@unlink($config_uploades_dir . "upload_to_wigle.zip");
 				}
 			}
 		} else {
-			echo "Error during upload to WiGLE!";
+			echo "Error during upload to WiGLE!\n";
 		}
 	}
 }
