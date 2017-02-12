@@ -3,7 +3,7 @@ Automated merging and uploading files to WiGLE.net using the API
 
 You need to get the API-Key from WiGLE.net: https://wigle.net/account
 
-This tool is _not_ official
+This tool is _not_ official!
 
 # Features (done)
 + search if any file exists in the directory
@@ -18,5 +18,5 @@ This tool is _not_ official
 # How to use
 
 1. Install php on your server
-2. open and edit wigle_uploader_config.php --> set you configurations (you need to get the API from WiGLE.net)
-3. just run wigle_uploader_run.php and wait
+2. open and edit _wigle_uploader_config.php_ --> set you configurations (you need to get the API from WiGLE.net)
+3. just run _wigle_uploader_run.php_ and wait
