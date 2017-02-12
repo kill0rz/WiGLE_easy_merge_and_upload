@@ -138,12 +138,17 @@ if (isset($files_dir) && trim($files_dir) != '') {
 					"donate" => "true",
 				));
 
-				curl_exec($this->ch);
+				return curl_exec($this->ch);
 			}
 		}
 
 		$getit = new curl($wigle_api_encoded);
-		$getit->upload($uploades_dir . "upload_to_wigle.zip");
+		$repsonse = json_decode($getit->upload($uploades_dir . "upload_to_wigle.zip"));
 		@unlink($uploades_dir . "upload_to_wigle.zip");
+		if ($repsonse->success == "1") {
+			echo "k";
+		} else {
+			echo "Error during upload to WiGLE!";
+		}
 	}
 }
