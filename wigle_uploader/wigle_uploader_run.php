@@ -2,17 +2,17 @@
 
 include './wigle_uploader_config.php';
 
-if (substr($files_dir, -1) != "/") {
-	$files_dir .= "/";
+if (substr($config_files_dir, -1) != "/") {
+	$config_files_dir .= "/";
 }
-if (substr($uploades_dir, -1) != "/") {
-	$uploades_dir .= "/";
+if (substr($config_uploades_dir, -1) != "/") {
+	$config_uploades_dir .= "/";
 }
 
 // Step 1: Look for any file
 
-if (isset($files_dir) && trim($files_dir) != '') {
-	$dh = opendir($files_dir);
+if (isset($config_files_dir) && trim($config_files_dir) != '') {
+	$dh = opendir($config_files_dir);
 	while (false !== ($filename = readdir($dh))) {
 		$files[] = $filename;
 	}
@@ -21,9 +21,9 @@ if (isset($files_dir) && trim($files_dir) != '') {
 		die('No files to process!');
 	} else {
 		// Step 2: Should the *.gpsxml be merged?
-		if ($merge_gpsxml) {
+		if ($config_merge_gpsxml) {
 			$gpsxml_files = array();
-			foreach (glob($files_dir . "*.gpsxml") as $file) {
+			foreach (glob($config_files_dir . "*.gpsxml") as $file) {
 				$gpsxml_files[] = $file;
 			}
 
@@ -55,27 +55,27 @@ if (isset($files_dir) && trim($files_dir) != '') {
 			}
 			$final_gpsxml_content = $final_gpsxml_header . $final_gpsxml_points . $final_gpsxml_footer;
 			if (trim($final_gpsxml_content) != '') {
-				file_put_contents($uploades_dir . "merged_gpsxml_files__" . time() . ".gpsxml", $final_gpsxml_content);
-				array_map('unlink', glob($files_dir . "*.gpsxml"));
+				file_put_contents($config_uploades_dir . "merged_gpsxml_files__" . time() . ".gpsxml", $final_gpsxml_content);
+				array_map('unlink', glob($config_files_dir . "*.gpsxml"));
 			}
 		}
 
 		// move all files to upload directory
 		$delete = array();
 		$files = array();
-		$dh = opendir($files_dir);
+		$dh = opendir($config_files_dir);
 		while (false !== ($filename = readdir($dh))) {
 			$files[] = $filename;
 		}
 
 		foreach ($files as $file) {
 			// do not move directories and invalid file names
-			if ((trim($file) != '' || in_array($file, array(".", "..")) || is_file($files_dir . $file)) && !preg_match("/[0-9a-zA-Z]{1,}\.[0-9a-zA-Z]{1,}/", $file)) {
+			if ((trim($file) != '' || in_array($file, array(".", "..")) || is_file($config_files_dir . $file)) && !preg_match("/[0-9a-zA-Z]{1,}\.[0-9a-zA-Z]{1,}/", $file)) {
 				continue;
 			}
 
-			if (copy($files_dir . $file, $uploades_dir . $file)) {
-				$delete[] = $files_dir . $file;
+			if (copy($config_files_dir . $file, $config_uploades_dir . $file)) {
+				$delete[] = $config_files_dir . $file;
 			}
 		}
 		foreach ($delete as $file) {
@@ -83,13 +83,13 @@ if (isset($files_dir) && trim($files_dir) != '') {
 		}
 
 		// Step 3: Create a zip file
-		$dh_u = opendir($uploades_dir);
+		$dh_u = opendir($config_uploades_dir);
 		while (false !== ($filename = readdir($dh_u))) {
 			$upload_files[] = $filename;
 		}
 		$delete = array();
 		$zip = new ZipArchive();
-		$filename = $uploades_dir . "upload_to_wigle.zip";
+		$filename = $config_uploades_dir . "upload_to_wigle.zip";
 
 		if ($zip->open($filename, ZipArchive::CREATE) !== TRUE) {
 			exit("cannot open <$filename>\n");
@@ -97,11 +97,11 @@ if (isset($files_dir) && trim($files_dir) != '') {
 
 		foreach ($upload_files as $file) {
 			// do not process directories and invalid file names
-			if ((trim($file) != '' || in_array($file, array(".", "..")) || is_file($uploades_dir . $file)) && !preg_match("/[0-9a-zA-Z]{1,}\.[0-9a-zA-Z]{1,}/", $file)) {
+			if ((trim($file) != '' || in_array($file, array(".", "..")) || is_file($config_uploades_dir . $file)) && !preg_match("/[0-9a-zA-Z]{1,}\.[0-9a-zA-Z]{1,}/", $file)) {
 				continue;
 			}
-			if ($zip->addFile($uploades_dir . $file, $file)) {
-				$delete[] = $uploades_dir . $file;
+			if ($zip->addFile($config_uploades_dir . $file, $file)) {
+				$delete[] = $config_uploades_dir . $file;
 			}
 
 		}
@@ -112,8 +112,8 @@ if (isset($files_dir) && trim($files_dir) != '') {
 
 		// Step 4: Upload to WiGLE
 		class curl {
-			public function __construct($wigle_api_encoded) {
-				$this->wigle_api_encoded = $wigle_api_encoded;
+			public function __construct($config_wigle_api_encoded) {
+				$this->wigle_api_encoded = $config_wigle_api_encoded;
 				$this->ch = curl_init();
 				curl_setopt($this->ch, CURLOPT_POST, 1);
 				curl_setopt($this->ch, CURLOPT_COOKIEJAR, 'cookie.txt');
@@ -142,11 +142,11 @@ if (isset($files_dir) && trim($files_dir) != '') {
 			}
 		}
 
-		$getit = new curl($wigle_api_encoded);
-		$repsonse = json_decode($getit->upload($uploades_dir . "upload_to_wigle.zip"));
-		@unlink($uploades_dir . "upload_to_wigle.zip");
+		$getit = new curl($config_wigle_api_encoded);
+		$repsonse = json_decode($getit->upload($config_uploades_dir . "upload_to_wigle.zip"));
 		if ($repsonse->success == "1") {
-			echo "k";
+			// Step 5: delete all files or archive them
+			@unlink($config_uploades_dir . "upload_to_wigle.zip");
 		} else {
 			echo "Error during upload to WiGLE!";
 		}
