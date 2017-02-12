@@ -152,7 +152,7 @@ if (isset($config_files_dir) && trim($config_files_dir) != '') {
 				// delete the zip file
 				@unlink($config_uploades_dir . "upload_to_wigle.zip");
 			} else {
-				// arcive the zip file
+				// archive the zip file
 				if (!copy($config_uploades_dir . "upload_to_wigle.zip", $config_archive_dir . time() . "_upload_to_wigle.zip")) {
 					echo "error copying file to archive!";
 				} else {
