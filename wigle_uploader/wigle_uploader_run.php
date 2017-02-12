@@ -39,20 +39,24 @@ if (isset($config_files_dir) && trim($config_files_dir) != '') {
 				if ($firstfile) {
 					// get header of first file
 					$firstfilecontent = explode("\n", file_get_contents($gpsxml_file));
-					$firstfilecontent_i = 0;
-					while (substr(trim($firstfilecontent[$firstfilecontent_i]), 0, 10) != "<gps-point") {
-						$final_gpsxml_header .= $firstfilecontent[$firstfilecontent_i] . "\n";
-						$firstfilecontent_i++;
+					if (count($firstfilecontent) > 1) {
+						$firstfilecontent_i = 0;
+						while (substr(trim($firstfilecontent[$firstfilecontent_i]), 0, 10) != "<gps-point") {
+							$final_gpsxml_header .= $firstfilecontent[$firstfilecontent_i] . "\n";
+							$firstfilecontent_i++;
+						}
+						$final_gpsxml_footer = "</gps-run>";
+						$firstfile = false;
 					}
-					$final_gpsxml_footer = "</gps-run>";
-					$firstfile = false;
 				}
 
 				//get content of every gps-point
 				$gpsxml_file_content = explode("\n", file_get_contents($gpsxml_file));
-				foreach ($gpsxml_file_content as $gps_points) {
-					if (substr(trim($gps_points), 0, 10) == "<gps-point") {
-						$final_gpsxml_points .= $gps_points . "\n";
+				if (count($gpsxml_file_content) > 1) {
+					foreach ($gpsxml_file_content as $gps_points) {
+						if (substr(trim($gps_points), 0, 10) == "<gps-point") {
+							$final_gpsxml_points .= $gps_points . "\n";
+						}
 					}
 				}
 			}
