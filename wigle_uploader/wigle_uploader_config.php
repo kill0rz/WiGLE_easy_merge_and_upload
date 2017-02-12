@@ -10,3 +10,8 @@ $config_wigle_api_encoded = "";
 
 // Should all *.gpsxml files be merged before further processing?
 $config_merge_gpsxml = true;
+
+// Should the uploaded zip file be delete afterwards (=true) or should it be archived (=false)?
+$config_delete_all = true;
+// If false, please give the path to the archive directory
+$config_archive_dir = "./archivefiles/";

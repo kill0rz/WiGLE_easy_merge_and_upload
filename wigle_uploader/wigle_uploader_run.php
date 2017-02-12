@@ -8,6 +8,9 @@ if (substr($config_files_dir, -1) != "/") {
 if (substr($config_uploades_dir, -1) != "/") {
 	$config_uploades_dir .= "/";
 }
+if (substr($config_archive_dir, -1) != "/") {
+	$config_archive_dir .= "/";
+}
 
 // Step 1: Look for any file
 
@@ -132,7 +135,6 @@ if (isset($config_files_dir) && trim($config_files_dir) != '') {
 				);
 
 				curl_setopt($this->ch, CURLOPT_URL, 'https://api.wigle.net/api/v2/file/upload/');
-
 				curl_setopt($this->ch, CURLOPT_POSTFIELDS, array(
 					"file" => new CurlFile($file, 'application/zip'),
 					"donate" => "true",
@@ -146,7 +148,18 @@ if (isset($config_files_dir) && trim($config_files_dir) != '') {
 		$repsonse = json_decode($getit->upload($config_uploades_dir . "upload_to_wigle.zip"));
 		if ($repsonse->success == "1") {
 			// Step 5: delete all files or archive them
-			@unlink($config_uploades_dir . "upload_to_wigle.zip");
+			if ($config_delete_all) {
+				// delete the zip file
+				@unlink($config_uploades_dir . "upload_to_wigle.zip");
+			} else {
+				// arcive the zip file
+				if (!copy($config_uploades_dir . "upload_to_wigle.zip", $config_archive_dir . time() . "_upload_to_wigle.zip")) {
+					echo "error copying file to archive!";
+				} else {
+					// copy success
+					@unlink($config_uploades_dir . "upload_to_wigle.zip");
+				}
+			}
 		} else {
 			echo "Error during upload to WiGLE!";
 		}
