@@ -41,7 +41,7 @@ if (isset($config_files_dir) && trim($config_files_dir) != '') {
 					$firstfilecontent = explode("\n", file_get_contents($gpsxml_file));
 					if (count($firstfilecontent) > 1) {
 						$firstfilecontent_i = 0;
-						while (substr(trim($firstfilecontent[$firstfilecontent_i]), 0, 10) != "<gps-point") {
+						while (substr(trim($firstfilecontent[$firstfilecontent_i]), 0, 10) != "<gps-point" && substr(trim($firstfilecontent[$firstfilecontent_i]), 0, 10) != "</gps-run>") {
 							$final_gpsxml_header .= $firstfilecontent[$firstfilecontent_i] . "\n";
 							$firstfilecontent_i++;
 						}
