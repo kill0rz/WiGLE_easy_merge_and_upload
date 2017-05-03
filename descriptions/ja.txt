@@ -1,0 +1,31 @@
+Title (30 characters):
+WiGLE Wifi Wardriving
+
+Promo (80 characters):
+ウォードライビング: Wi-Fiネットワークを収集し、WiGLEデータベースに集積します。
+
+Description (4000 characters):
+WiGLE はオープンソースのウォードライビングアプリケーションです。世界中の Wi-Fi AP や携帯電話基地局を収集しマップ上に表示、WiGLE.net データベースにアップロードできます。WiGLEは2001年に始まり、現在では1.25億以上のWi-Fiや基地局情報がマッピングされています。
+
+• Wi-Fi APや携帯電話基地局をどれだけたくさん収集できるか世界中で競争しよう
+• 収集したデータをCSVファイルへエクスポート可能
+• 収集したデータをKMLファイルへエクスポート可能(Google Maps/Earthで読み込み可能)
+• 音声(text-to-speech)による警告で運転中も安心(英語のみ)
+• 端末内データベースにより既に発見済みの無線局かどうか判別可能
+• 発見した無線局をリアルタイムに地図上に表示
+• アプリはSDカードに移動可能
+• 音声を一発でミュート可能
+• Bluetooth GPS サポート
+• 広告なし
+
+リリースノート： https://github.com/wiglenet/wigle-wifi-wardriving/blob/master/TODO
+
+Wi-Fi と携帯電話基地局を収集するには、GPSなどを利用して現在地を取得する必要があります。
+地図上: 円は Wi-Fi, 四角は携帯電話基地局; 薄い色は以前にも発見したことのある無線局(端末のローカルデータベース内に存在する局)で、紫色は新たに発見した無線局
+もし、不具合があったり、なにかよい提案があれば wigle-admin@wigle.net へメール(英語のみ)を送信してください。喜んでお手伝いいたします。このアプリは、端末が通話中かどうかを判別するために "Reads Phone Status" 権限を必要とします(音声警告をミュートするため)。
+
+これらのファイルやメッセージカタログは、英語以外の言語への翻訳を必要としています。我々は、これらの言語をほとんどまったく知らないので、機械翻訳に頼っています。あなたの翻訳を pull request にてお待ちしております。 https://github.com/wiglenet/wigle-wifi-wardriving/pulls
+または wigle-admin@wigle.net にお送りください。
+
+Keep on stumbling!
+

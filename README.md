@@ -1,3 +1,4 @@
+<<<<<<< HEAD
 # WiGLE_easy_merge_and_upload
 Automated merging and uploading files to WiGLE.net using the API
 
@@ -26,3 +27,12 @@ Please report any bug and feature request.
 Contact me via Github, please.
 
 I am not a member of WiGLE team and I am not associated with them.
+=======
+wigle-wifi-wardriving
+=====================
+
+Nethugging client for Android, from [wigle.net](https://wigle.net).
+
+Available on [Google Play](https://play.google.com/store/apps/details?id=net.wigle.wigleandroid&hl=en)
+and [Amazon App Store](http://www.amazon.com/WiGLE-net-Wigle-Wifi-Wardriving/dp/B004L5XBXS).
+>>>>>>> 6dae434ca20f8001d2fed8f562e01edaf9060eab
